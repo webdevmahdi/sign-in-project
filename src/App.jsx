@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import app from './firebase.init';
-import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, updateProfile } from 'firebase/auth'
+import { GithubAuthProvider, GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth'
 import './App.css'
 import { Form, Button, } from 'react-bootstrap';
 
@@ -12,9 +12,30 @@ function App() {
   let [pass, setPass] = useState('');
   let [userName, setUserName] = useState('')
   let [error, setError] = useState('');
+  let [user, setUser] = useState({});
   let [registered, setRegistered] = useState(false);
   let [validated, setValidated] = useState(false);
 
+  let googleProvider = new GoogleAuthProvider();
+  let githubProvider = new GithubAuthProvider();
+
+  let googleSignIn = () => {
+    signInWithPopup(auth, googleProvider)
+      .then(res => {
+        let user = res.user;
+        setUser(user);
+      })
+      .catch(err => setError(err))
+  }
+
+  let githubSignIn = () => {
+    signInWithPopup(auth, githubProvider)
+      .then(res => {
+        let user = res.user;
+        setUser(user);
+      })
+      .catch(err => setError(err))
+  }
 
   let emailBlur = event => {
     setEmail(event.target.value)
@@ -48,7 +69,7 @@ function App() {
   let resetPassword = () => {
     sendPasswordResetEmail(auth, email)
       .then(() => console.log("password has been sent"))
-      .catch(() => console.log('There hapand an error'))
+      .catch(() => console.log('There happen an error'))
   }
 
 
@@ -103,6 +124,11 @@ function App() {
   console.log(email, pass, userName, registered)
   return (
     <div>
+      <div className='sign-in-button'>
+        <button className='bg-primary text-white' onClick={googleSignIn}>Google sign in</button>
+        <button className='bg-primary text-white' onClick={githubSignIn}>Github sign in</button>
+      </div>
+
       <Form className='shadow-lg p-3 p-5 bg-white rounded' noValidate validated={validated} onSubmit={submitForm}>
         <h2 className='text-primary'>Input your {registered ? 'log in' : 'registration'} details</h2>
         <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -133,7 +159,8 @@ function App() {
           <Form.Check onChange={logIn} type="checkbox" label="Already have an account" />
         </Form.Group>
 
-{registered ? <Button onClick={resetPassword} variant='link'>Reset Password</Button> : ''}        <br />
+        {registered ? <Button onClick={resetPassword} variant='link'>Reset Password</Button> : ''}
+        <br />
         <Button variant="primary" type="submit">
           {registered ? "Log in" : "Register"}
         </Button>
