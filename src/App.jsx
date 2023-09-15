@@ -16,9 +16,11 @@ function App() {
   let [registered, setRegistered] = useState(false);
   let [validated, setValidated] = useState(false);
 
+  // Providers
   let googleProvider = new GoogleAuthProvider();
   let githubProvider = new GithubAuthProvider();
 
+  // Google sign in setup
   let googleSignIn = () => {
     signInWithPopup(auth, googleProvider)
       .then(res => {
@@ -28,6 +30,7 @@ function App() {
       .catch(err => setError(err))
   }
 
+  // Github sign in setup
   let githubSignIn = () => {
     signInWithPopup(auth, githubProvider)
       .then(res => {
@@ -37,14 +40,17 @@ function App() {
       .catch(err => setError(err))
   }
 
+  // Email mouseout event handler
   let emailBlur = event => {
     setEmail(event.target.value)
   }
 
+  // Password mouseout event handler
   let passBlur = event => {
     setPass(event.target.value)
   }
 
+  // Email mouseout event handler
   let userNameBlur = event => {
     setUserName(event.target.value);
   }
