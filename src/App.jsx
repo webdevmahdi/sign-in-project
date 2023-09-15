@@ -121,7 +121,6 @@ function App() {
     event.preventDefault();
   };
 
-  console.log(email, pass, userName, registered)
   return (
     <div>
       <div className='sign-in-button'>
